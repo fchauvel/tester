@@ -16,7 +16,7 @@ setup(name=__program__,
       test_suite="tests",
       entry_points = {
           'console_scripts': [
-              __command__ + " = tester.start:main'
+              __command__ + " = tester.start:main"
           ]
       }
      )
