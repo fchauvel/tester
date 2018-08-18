@@ -22,16 +22,17 @@ from time import sleep
 
 class SensAppTests:
 
-    def __init__(self, settings, ui):
+    def __init__(self, settings, ui, receiver):
         self._settings = settings
         self._ui = ui
+        self._receiver = receiver
 
 
     def run(self):
         data = self._fetch_json_from(self._settings.data_directory)
         for file_name, content in data:
             self._ui.show_testing(file_name)
-            self._send_to_message_queue(content)
+            self._send_to_receiver(content)
             self._wait_for(3)
             verdict = self._check_database(content)
             self._ui.show_verdict(verdict)
@@ -56,6 +57,10 @@ class SensAppTests:
             text = data.read()
             return json.loads(text)
 
+    def _send_to_receiver(self, data):
+        sensor_id = data[0]["measurement"] 
+        self._receiver.accept(sensor_id, data)
+        
 
     def _send_to_message_queue(self, data):
         connection = pika.BlockingConnection(

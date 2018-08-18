@@ -24,5 +24,3 @@ RUN pip install .
 
 # Run sensapp-storage
 CMD ["sensapp-tester", "-q", "task-queue", "-n", "SENSAPP_TASK"]
-
-

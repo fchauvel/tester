@@ -17,10 +17,11 @@ from sys import stdout, argv
 from tester.settings import Settings
 from tester.core import SensAppTests
 from tester.ui import UI
+from tester.clients import Receiver
 
 
 
 def main():
     settings = Settings.from_command_line(argv[1:])
-    tests = SensAppTests(settings, UI(stdout))
+    tests = SensAppTests(settings, UI(stdout), Receiver(settings))
     tests.run()
