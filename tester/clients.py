@@ -17,7 +17,7 @@ import json
 class Receiver:
 
     
-    PUBLISH = "http://receiver:3000/sensapp/{id}"
+    PUBLISH = "http://{host}:{port}/sensapp/{id}"
 
     
     def __init__(self, settings):
@@ -28,7 +28,9 @@ class Receiver:
     def accept(self, sensor_id, data):
         json_payload = json.dumps(data)
         headers = { "Content-Type": "application/json" }
-        url = self.PUBLISH.format(id=sensor_id)
+        url = self.PUBLISH.format(host=self._host,
+                                  port=self._port,
+                                  id=sensor_id)
         
         response = requests.post(url, data=json_payload, headers=headers)
         if response.status_code != 200:
