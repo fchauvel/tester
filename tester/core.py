@@ -58,9 +58,9 @@ class SensAppTests:
         sensors = Sensor.from_yaml(self._settings.sensors,
                                    self._sensapp.receiver,
                                    [Reporter(self._ui)])
-        #self._register(sensors)
+        self._register(sensors)
         wait_all(*sensors)
-        #self._check_database(sensors)
+        self._check_database(sensors)
 
     
     DB_QUERY = "select * from {table}"
