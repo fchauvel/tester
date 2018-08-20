@@ -78,7 +78,7 @@ class SensAppTests:
 
         verdict = []
         for each_sensor in sensors:
-            query = self.DB_QUERY.format(table=each_sensor.name)
+            query = self.DB_QUERY.format(table=each_sensor.about.identifier)
             result = client.query(query)
             verdict.append(sensor.name, len(result) == each.sensor.count)
 

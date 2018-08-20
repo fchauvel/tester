@@ -60,7 +60,7 @@ class Registry:
         if response.status_code != 200:
             response.raise_for_status()
         data = json.loads(response.text)
-        sensor.identifier = data["id"]
+        sensor.about.identifier = data["id"]
 
 
     def all_sensors(self):
