@@ -14,13 +14,13 @@ LABEL maintainer "franck.chauvel@sintef.no"
 
 # Update the dist and install needed tools
 RUN apt-get -qq update
-RUN apt-get -qq -y install git python3-dev
+RUN apt-get -qq -y install python3-dev
 
-# Fetch, build and install sensapp-storage
-RUN git clone https://github.com/fchauvel/tester.git
+# Fetch, build and install sensapp-tester
+COPY . tester
 WORKDIR tester
 RUN pip install -r requirements.txt
 RUN pip install .
 
-# Run sensapp-storage
+# Run sensapp-tester
 CMD ["sensapp-tester", "-q", "task-queue", "-n", "SENSAPP_TASK"]
