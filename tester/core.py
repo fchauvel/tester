@@ -58,9 +58,14 @@ class SensAppTests:
         sensors = Sensor.from_yaml(self._settings.sensors,
                                    self._sensapp.receiver,
                                    [Reporter(self._ui)])
-        self._register(sensors)
+        self._register_all(sensors)
         wait_all(*sensors)
         self._check_database(sensors)
+
+        
+    def _register_all(self, sensors):
+        for each_sensor in sensors:
+            self._sensapp.registry.register(each_sensor)
 
     
     DB_QUERY = "select * from {table}"
