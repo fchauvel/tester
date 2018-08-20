@@ -16,7 +16,7 @@ class UI:
 
 
     SENSOR_REGISTERED = "Sensor '{sensor.name}' registered with ID '{sensor.identifier}'\n"
-    SENSOR_STARTED = " Starting '{sensor.name:10}' ...\n"
+    SENSOR_STARTED = "Starting sensor '{sensor.name:10}' ...\n"
     SENSOR_STOPPED = "   {sensor.name:10} Shutting down ... \n"
     DATA_SENT = "   {sensor.name:10} Pushing data (value={data}) \n"
     SENSOR_ERROR = "   {sensor.name:10} ERROR: {error}\n"
