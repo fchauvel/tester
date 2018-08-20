@@ -67,7 +67,7 @@ class SensAppTests:
     def _register_all(self, sensors):
         for each_sensor in sensors:
             self._sensapp.registry.register(each_sensor)
-            self._ui.sensor_registered(each_sensor)
+            self._ui.sensor_registered(each_sensor.about)
 
     
     DB_QUERY = "select * from sensapp_{table}"
