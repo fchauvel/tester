@@ -59,7 +59,7 @@ class Registry:
         response = requests.post(url, data=json_payload, headers=headers)
         if response.status_code != 200:
             response.raise_for_status()
-        data = json.parse(response.text)
+        data = json.loads(response.text)
         sensor.identifier = data["id"]
 
 
