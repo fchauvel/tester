@@ -17,7 +17,7 @@ class UI:
     SENSOR_STARTED = "{sensor.name:>10} | Starting ...\n"
     SENSOR_STOPPED = "{sensor.name:>10} | Stopped!\n"
     DATA_SEND = "{sensor.name:>10} | Pushing data (value={data})!\n"
-    SENSOR_ERROR = "{sensor.name:>10} | {error}\n"
+    SENSOR_ERROR = "{sensor.name:>10} | ERROR: {error}\n"
     
     PASS = "[ OK ]\n"
     FAILED = "[ FAILED ]\n"
@@ -30,7 +30,7 @@ class UI:
         self._print(self.SENSOR_STARTED, sensor=sensor)
 
     def data_pushed(self, sensor, data):
-        self._print(self.DATA_PAUSHED, sensor=sensor, data=data["fields"]["value"])
+        self._print(self.DATA_SENT, sensor=sensor, data=data["fields"]["value"])
         
     def sensor_stopped(self, sensor):
         self._print(self.SENSOR_STOPPED, sensor=sensor)
