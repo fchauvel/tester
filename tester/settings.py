@@ -59,7 +59,13 @@ class Settings:
             "-m",
             "--db-name",
             "sensapp",
-            "Set the name of the DB that contains sensors' data")
+            "Set the name of the DB that contains sensors' data"),
+        "sensors": (
+            "-s",
+            "--sensor-file",
+            "sensors.yml",
+            "Set which file decribes the sensors to emulate"
+        )
     }
 
 

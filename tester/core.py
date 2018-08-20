@@ -9,7 +9,9 @@
 #
 
 
+
 import pika
+
 from influxdb import InfluxDBClient
 
 import json
@@ -19,77 +21,60 @@ from os.path import isdir, isfile, join
 
 from time import sleep
 
+from tester.sensors import Sensor, SensorInfos, Listener, wait_all
+
+
+
+
+class Reporter(Listener):
+
+    def __init__(self, ui):
+        self._ui = ui
+
+    def on_start(self, sensor):
+        self._ui.sensor_started(sensor)
+
+    def on_push(self, sensor, data):
+        self._ui.data_pushed(sensor, data)
+
+    def on_exit(self, sensor):
+        self._ui.sensor_stopped(sensor)
+
+    def on_error(self, sensor, error):
+        self._ui.sensor_error(sensor, error)
+
+
+    
 
 class SensAppTests:
 
-    def __init__(self, settings, ui, receiver):
+    def __init__(self, settings, ui, sensapp):
         self._settings = settings
         self._ui = ui
-        self._receiver = receiver
+        self._sensapp = sensapp
 
 
     def run(self):
-        data = self._fetch_json_from(self._settings.data_directory)
-        for file_name, content in data:
-            self._ui.show_testing(file_name)
-            self._send_to_receiver(content)
-            self._wait_for(3)
-            verdict = self._check_database(content)
-            self._ui.show_verdict(verdict)
+        sensors = Sensor.from_yaml(self._settings.sensors,
+                                   self._sensapp.receiver,
+                                   [Reporter(self._ui)])
+        #self._register(sensors)
+        wait_all(*sensors)
+        #self._check_database(sensors)
 
+    
+    DB_QUERY = "select * from {table}"
 
-    @staticmethod
-    def _fetch_json_from(directory):
-        json_files = []
-        for any_entry in listdir(directory):
-            full_path = join(directory, any_entry)
-            if isfile(full_path) and any_entry.endswith(".json"):
-                json_files.append((full_path, SensAppTests._content_of(full_path)))
-            elif isdir(full_path):
-                files_subdirectory = SensAppTests._fetch_json_from(full_path)
-                json_files.extends(files_in_subdirectory)
-        return json_files
-
-
-    @staticmethod
-    def _content_of(file_name):
-        with open(file_name, "r") as data :
-            text = data.read()
-            return json.loads(text)
-
-    def _send_to_receiver(self, data):
-        sensor_id = data[0]["measurement"] 
-        self._receiver.accept(sensor_id, data)
-        
-
-    def _send_to_message_queue(self, data):
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=self._settings.queue_host))
-
-        channel = connection.channel()
-        channel.queue_declare(queue=self._settings.queue_name,
-                              durable=True)
-
-        json_payload = json.dumps(data)
-        channel.basic_publish(
-            exchange='',
-            routing_key=self._settings.queue_name,
-            body=json_payload,
-            properties=pika.BasicProperties(delivery_mode = 2))
-
-        connection.close()
-
-
-    def _wait_for(self, duration):
-        sleep(duration)
-
-
-    def _check_database(self, data):
+    def _check_database(self, sensors):
         client = InfluxDBClient(self._settings.db_host,
                                 self._settings.db_port)
-        client.switch_database(self._settings.db_name);
+        
+        client.switch_database(self._settings.db_name)
 
-        query = "select * from {table} WHERE time = '{time}'".format(table=data[0]["measurement"],
-                                                                   time=data[0]["time"])
-        result = client.query(query)
-        return len(result) == 1
+        verdict = []
+        for each_sensor in sensors:
+            query = DB_QUERY.format(table=each_sensor.name)
+            result = client.query(query)
+            verdict.append(sensor.name, len(result) == each.sensor.count)
+
+        return verdict
