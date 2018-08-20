@@ -47,9 +47,9 @@ class Registry:
 
     def register(self, sensor):
         json_payload = json.dumps({
-            "name": sensor.name,
-            "description": sensor.description,
-            "unit": sensor.unit
+            "name": sensor.about.name,
+            "description": sensor.about.description,
+            "unit": sensor.about.unit
         })
 
         headers = { "Content-Type": "application/json" }
