@@ -14,35 +14,52 @@
 
 class UI:
 
-    SENSOR_STARTED = "{sensor.name:>10} | Starting ...\n"
-    SENSOR_STOPPED = "{sensor.name:>10} | Stopped!\n"
-    DATA_SENT = "{sensor.name:>10} | Pushing data (value={data})!\n"
-    SENSOR_ERROR = "{sensor.name:>10} | ERROR: {error}\n"
 
-    PASS = "[ OK ]\n"
-    FAILED = "[ FAILED ]\n"
+    SENSOR_REGISTERED = "Sensor '{sensor.name}' registered with ID '{sensor.identifier}'\n"
+    SENSOR_STARTED = " Starting '{sensor.name:10}' ...\n"
+    SENSOR_STOPPED = "   {sensor.name:10} Shutting down ... \n"
+    DATA_SENT = "   {sensor.name:10} Pushing data (value={data}) \n"
+    SENSOR_ERROR = "   {sensor.name:10} ERROR: {error}\n"
+
+    PASS = " - {name:10} OK"
+    FAILED = " - {name:10} FAILED: Missing {count} entries!"
+
 
     def __init__(self, output):
         self._output = output
 
+
+    def sensor_registered(self, sensor):
+        self._print(self.SENSOR_REGISTERED, sensor=sensor)
+
+
+    def sensor_starting(self):
+        self._print(self.SENSOR_STARTING,)
+
+
     def sensor_started(self, sensor):
         self._print(self.SENSOR_STARTED, sensor=sensor)
+
 
     def data_pushed(self, sensor, data):
         self._print(self.DATA_SENT, sensor=sensor, data=data["fields"]["value"])
 
+
     def sensor_stopped(self, sensor):
         self._print(self.SENSOR_STOPPED, sensor=sensor)
+
 
     def sensor_error(self, sensor, error):
         self._print(self.SENSOR_ERROR, sensor=sensor, error=str(error))
 
 
     def show_verdict(self, verdict):
-        if verdict:
-            self._print(self.PASS)
-        else:
-            self._print(self.FAILED)
+        self._print("Checking storage database ...\n")
+        for name, count in verdict:
+            if count == 0:
+                self._print(self.PASS, name=name)
+            else:
+                self._print(self.FAILED, name=name, count=count)
 
 
     def _print(self, text, **values):

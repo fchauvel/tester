@@ -37,7 +37,7 @@ class Reporter(Listener):
     def on_push(self, sensor, data):
         self._ui.data_pushed(sensor, data)
 
-    def on_exit(self, sensor):
+    def on_stop(self, sensor):
         self._ui.sensor_stopped(sensor)
 
     def on_error(self, sensor, error):
@@ -60,15 +60,17 @@ class SensAppTests:
                                    [Reporter(self._ui)])
         self._register_all(sensors)
         wait_all(*sensors)
-        self._check_database(sensors)
+        verdict = self._check_database(sensors)
+        self._ui.show_verdict(verdict)
 
         
     def _register_all(self, sensors):
         for each_sensor in sensors:
             self._sensapp.registry.register(each_sensor)
+            self._ui.sensor_registered(each_sensor)
 
     
-    DB_QUERY = "select * from {table}"
+    DB_QUERY = "select * from sensapp_{table}"
 
     def _check_database(self, sensors):
         client = InfluxDBClient(self._settings.db_host,
@@ -80,6 +82,6 @@ class SensAppTests:
         for each_sensor in sensors:
             query = self.DB_QUERY.format(table=each_sensor.about.identifier)
             result = client.query(query)
-            verdict.append(sensor.name, len(result) == each.sensor.count)
+            verdict.append(sensor.name, each.sensor.count - len(result))
 
         return verdict

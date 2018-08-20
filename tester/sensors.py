@@ -105,7 +105,7 @@ class Sensor:
                 break
 
             data = {
-                "measurement": self._infos.identifier,
+                "measurement": "sensor_" + str(self._infos.identifier),
                 "tags": {
                     "source": __program__
                 },
