@@ -21,7 +21,7 @@ class UI:
     DATA_SENT = "   {sensor.name:10} Pushing data (value={data}) \n"
     SENSOR_ERROR = "   {sensor.name:10} ERROR: {error}\n"
 
-    PASS = " - {name:10} OK"
+    PASS = " - {name:10} OK\n"
     FAILED = " - {name:10} FAILED: Missing {count} entries!\n"
 
 

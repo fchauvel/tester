@@ -70,18 +70,19 @@ class SensAppTests:
             self._ui.sensor_registered(each_sensor.about)
 
     
-    DB_QUERY = "select * from sensapp_{table}"
+    DB_QUERY = "select * from \"sensor_{table}\";"
 
     def _check_database(self, sensors):
         client = InfluxDBClient(self._settings.db_host,
                                 self._settings.db_port)
-        
+
+        print(self._settings.db_name)
         client.switch_database(self._settings.db_name)
 
         verdict = []
         for each_sensor in sensors:
             query = self.DB_QUERY.format(table=each_sensor.about.identifier)
             result = client.query(query)
-            verdict.append((each_sensor.about.name, each_sensor.count - len(result)))
+            verdict.append((each_sensor.about.name, each_sensor.count - len(list(result.get_points()))))
             
         return verdict

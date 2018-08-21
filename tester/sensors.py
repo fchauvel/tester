@@ -104,21 +104,21 @@ class Sensor:
             if self.has_stopped:
                 break
 
-            data = {
+            data = [ {
                 "measurement": "sensor_" + str(self._infos.identifier),
                 "tags": {
                     "source": __program__
                 },
-                "time": datetime.now().strftime("%Y-%M-%dT%H:%m:%SZ"),
+                "time": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "fields": {
                     "value": each
                 }
-            }
+            } ]
 
             try:
                 self._receiver.accept(self._infos.identifier, data)
                 for each in self._listeners:
-                    each.on_push(self._infos, data)
+                    each.on_push(self._infos, data[0])
 
             except Exception as error:
                 for each in self._listeners:
