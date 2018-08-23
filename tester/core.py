@@ -58,8 +58,10 @@ class SensAppTests:
         sensors = Sensor.from_yaml(self._settings.sensors,
                                    self._sensapp.receiver,
                                    [Reporter(self._ui)])
+
         self._register_all(sensors)
         wait_all(*sensors)
+        
         verdict = self._check_database(sensors)
         self._ui.show_verdict(verdict)
 
@@ -76,7 +78,6 @@ class SensAppTests:
         client = InfluxDBClient(self._settings.db_host,
                                 self._settings.db_port)
 
-        print(self._settings.db_name)
         client.switch_database(self._settings.db_name)
 
         verdict = []
@@ -84,5 +85,6 @@ class SensAppTests:
             query = self.DB_QUERY.format(table=each_sensor.about.identifier)
             result = client.query(query)
             verdict.append((each_sensor.about.name, each_sensor.count - len(list(result.get_points()))))
-            
+
+        client.close()
         return verdict

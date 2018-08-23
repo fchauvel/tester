@@ -68,7 +68,7 @@ class Sensor:
         self._stopped = Event()
         self._thread = None
         self._count = 0
-        self._listeners = listeners or []
+        self._listeners = list(listeners) if listeners else []
 
 
     def add_listener(self, listener):
@@ -101,7 +101,7 @@ class Sensor:
             each.on_start(self._infos)
 
         for each in self._data_source:
-            if self.has_stopped:
+            if self._stopped.is_set():
                 break
 
             data = [ {
@@ -127,20 +127,14 @@ class Sensor:
             self._count += 1
             sleep(self._period)
 
-        self._stopped.set()
-
         for each in self._listeners:
             each.on_stop(self._infos)
 
-
-    @property
-    def has_stopped(self):
-        return not self.is_running
-
+        return 0
 
     @property
     def is_running(self):
-        return not self._stopped.is_set()
+        return self._thread.is_alive()
 
 
     def wait_for_completion(self):
@@ -204,3 +198,5 @@ def wait_all(*sensors):
         each_sensor.add_listener(BarrierListener(barrier))
         each_sensor.start()
     barrier.wait()
+    for each in sensors:
+        each.wait_for_completion()
