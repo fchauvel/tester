@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/fchauvel/tester.svg?branch=master)](https://travis-ci.org/fchauvel/tester)
+
 # SensApp::Tester
 
 Runs integration tests against the SensApp architecture
