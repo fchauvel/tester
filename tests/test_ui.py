@@ -96,7 +96,13 @@ class UITests(TestCase):
         self._assert_output_includes(UI.SENSOR_EVENT,
                                      sensor=self._sensor_infos.name,
                                      event=UI.SHUTTING_DOWN)
-    
+
+    def test_retry(self):
+        self._ui.retry(20)
+
+        self._assert_output_includes(UI.RETRY,
+                                     duration=20)
+        
 
     def test_goodbye(self):
         self._ui.goodbye()

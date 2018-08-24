@@ -88,8 +88,16 @@ class SensAppTests:
         self._ui.registration()
         for is_registered, each_sensor in sensors:
             if not is_registered:
-                self._sensapp.registry.register(each_sensor)
-                self._ui.sensor_registered(each_sensor.about)
+                while True:
+                    try:
+                        self._sensapp.registry.register(each_sensor)
+                        self._ui.sensor_registered(each_sensor.about)
+                        break
+                    except Exception as error:
+                        self._ui.show_error(type(error).__name__)
+                        self._ui.retry(20)
+                        sleep(20)
+                        
 
     
     DB_QUERY = "select * from \"sensor_{table}\";"

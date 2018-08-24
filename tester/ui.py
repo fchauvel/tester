@@ -125,8 +125,14 @@ class UI:
     def show_error(self, error):
         self._print(self.UNKNOWN_ERROR, error=str(error))
         
-    UNKNOWN_ERROR= "/!\ Unexpected error: {error}"
+    UNKNOWN_ERROR= "/!\ Unexpected error: {error}\n"
 
+
+    def retry(self, duration):
+        self._print(UI.RETRY, duration=duration)
+
+    RETRY= "    Retrying in {duration} sec.!\n"
+    
     
     def _print(self, text, **values):
         self._output.write(text.format(**values))
