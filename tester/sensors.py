@@ -74,7 +74,10 @@ class Sensor:
     def add_listener(self, listener):
         self._listeners.append(listener)
 
-
+    @property
+    def is_registered(self):
+        return self._infos.identifier is not None
+        
     @property
     def count(self):
         return self._count
@@ -147,21 +150,20 @@ class Sensor:
 
 
     @staticmethod
-    def from_yaml(yamlfile, receiver, listeners):
+    def from_yaml(source, receiver, listeners):
         sensors = []
-        with open(yamlfile, "r") as source:
-            obj = yaml.load(source)
-            for name, sensor in obj["sensors"].items():
-                infos = SensorInfos(None,
-                                   name,
-                                   sensor["description"],
-                                   sensor["unit"])
-                sensor = Sensor(infos,
-                                int(sensor["period"]),
-                                (v for v in sensor["data"]),
-                                receiver,
-                                listeners)
-                sensors.append(sensor)
+        obj = yaml.load(source)
+        for name, sensor in obj["sensors"].items():
+            infos = SensorInfos(sensor.get("id", None),
+                                name,
+                                sensor["description"],
+                                sensor["unit"])
+            sensor = Sensor(infos,
+                            int(sensor["period"]),
+                            (v for v in sensor["data"]),
+                            receiver,
+                            listeners)
+            sensors.append(sensor)
         return sensors
 
 

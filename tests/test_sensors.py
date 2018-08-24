@@ -46,12 +46,29 @@ class FiniteSensorTests(TestCase):
 class SensorFromYAMLTests(TestCase):
 
     def test_all_sensors_are_read(self):
-        sensors = Sensor.from_yaml("./data/sensors.yml",
-                                    MagicMock(),
-                                    [MagicMock()])
-        self.assertEqual(len(sensors), 3)
-        for each in sensors:
-            self.assertEqual(1, len(each._listeners))
+        with open("./data/sensors.yml", "r") as source:
+            sensors = Sensor.from_yaml(source,
+                                       MagicMock(),
+                                       [MagicMock()])
+                
+            self.assertEqual(len(sensors), 3)
+            for each in sensors:
+                self.assertEqual(1, len(each._listeners))
+
+    def test_loading_sensor_that_are_not_registered(self):
+        receiver = MagicMock()
+        text = ("sensors:\n"
+                "   test:\n"
+                "      id: 1001\n"
+                "      period: 2\n"
+                "      data: [1, 2, 3, 4]\n"
+                "      description: A test sensor that is registered\n"
+                "      unit: km/h\n")
+
+        sensors = Sensor.from_yaml(text, receiver, None)
+
+        self.assertEqual(1, len(sensors))
+        self.assertEqual(1001, sensors[0].about.identifier)
         
 
         

@@ -55,21 +55,41 @@ class SensAppTests:
 
 
     def run(self):
-        sensors = Sensor.from_yaml(self._settings.sensors,
-                                   self._sensapp.receiver,
-                                   [Reporter(self._ui)])
+        self._ui.welcome()
+        with open(self._settings.sensors, "r") as source:
+            try:
+                sensors = Sensor.from_yaml(source,
+                                           self._sensapp.receiver,
+                                           [Reporter(self._ui)])
+                self._ui.sensors_loaded(self._settings.sensors)
+                
+                sensors = self._classify(sensors)
 
-        self._register_all(sensors)
-        wait_all(*sensors)
+                self._register_all(sensors)
+
+                self._ui.pushing()
+                wait_all(*[ each for _, each in sensors])
         
-        verdict = self._check_database(sensors)
-        self._ui.show_verdict(verdict)
+                verdict = self._check_database(sensors)
+                self._ui.show_verdict(verdict)
+
+                self._ui.goodbye()
+
+            except Exception as error:
+                self._ui.show_error(error)
+
+                
+    def _classify(self, sensors):
+        return [ (each.is_registered, each) for each in sensors ]
+            
 
         
     def _register_all(self, sensors):
-        for each_sensor in sensors:
-            self._sensapp.registry.register(each_sensor)
-            self._ui.sensor_registered(each_sensor.about)
+        self._ui.registration()
+        for is_registered, each_sensor in sensors:
+            if not is_registered:
+                self._sensapp.registry.register(each_sensor)
+                self._ui.sensor_registered(each_sensor.about)
 
     
     DB_QUERY = "select * from \"sensor_{table}\";"
@@ -81,10 +101,12 @@ class SensAppTests:
         client.switch_database(self._settings.db_name)
 
         verdict = []
-        for each_sensor in sensors:
+        for registered, each_sensor in sensors:
             query = self.DB_QUERY.format(table=each_sensor.about.identifier)
             result = client.query(query)
-            verdict.append((each_sensor.about.name, each_sensor.count - len(list(result.get_points()))))
+            actual = len(list(result.get_points()))
+            expected = each_sensor.count if not registered else 0
+            verdict.append((registered, each_sensor, expected, actual))
 
         client.close()
         return verdict

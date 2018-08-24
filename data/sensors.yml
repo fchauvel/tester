@@ -5,10 +5,11 @@
 sensors:
   
   test1:
-    description: A simple test sensor
-    unit: cm
+    id: 666
+    description: A simple test sensor, that pretends to be registered
+    unit: km/h
     period: 2
-    data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    data: [666, 666, 666]
 
   test2:
     description: Another test sensor
