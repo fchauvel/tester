@@ -37,7 +37,7 @@ class SensApp:
 class Registry:
 
 
-    URL = "http://{host}:{port}/sensapp/"
+    URL = "http://{host}:{port}/"
 
 
     def __init__(self, settings):
@@ -74,7 +74,7 @@ class Registry:
 class Receiver:
 
 
-    PUBLISH = "http://{host}:{port}/sensapp/{id}"
+    PUBLISH = "http://{host}:{port}/sensors/{id}/data/"
 
 
     def __init__(self, settings):
