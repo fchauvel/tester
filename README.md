@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/fchauvel/tester.svg?branch=master)](https://travis-ci.org/fchauvel/tester)
 [![Test Coverage](https://img.shields.io/codecov/c/github/fchauvel/tester.svg)](https://codecov.io/gh/fchauvel/tester)
+![GitHub tag](https://img.shields.io/github/tag/fchauvel/tester.svg)
+
 
 # SensApp::Tester
 
