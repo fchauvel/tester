@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b89371cc2e1b4d6aabec8406d98af8cd)](https://app.codacy.com/app/fchauvel/tester?utm_source=github.com&utm_medium=referral&utm_content=fchauvel/tester&utm_campaign=Badge_Grade_Settings)
 [![Build Status](https://travis-ci.org/fchauvel/tester.svg?branch=master)](https://travis-ci.org/fchauvel/tester)
 [![Test Coverage](https://img.shields.io/codecov/c/github/fchauvel/tester.svg)](https://codecov.io/gh/fchauvel/tester)
 ![GitHub tag](https://img.shields.io/github/tag/fchauvel/tester.svg)
