@@ -17,7 +17,7 @@ __description__ = "Run integration tests against the SensApp architecture"
 
 __copyright__ = "Copyright (C) 2018 SINTEF"
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __license__ = "MIT"
 
