@@ -8,17 +8,14 @@
 # of the MIT license.  See the LICENSE file for details.
 #
 
-FROM python:3.4-slim
+FROM python:3.5-alpine
 
 LABEL maintainer "franck.chauvel@sintef.no"
 
-# Update the dist and install needed tools
-RUN apt-get -qq update
-RUN apt-get -qq -y install python3-dev
+WORKDIR /tester
+COPY . /tester
 
-# Fetch, build and install sensapp-tester
-COPY . tester
-WORKDIR tester
+# Install sensapp tester
 RUN pip install -r requirements.txt
 RUN pip install .
 
